@@ -159,11 +159,12 @@ void solve() {
             for (int i = x; i <= y; i++) tmp[a[i]] = 0;
         } else {
             ans = pre[id[x] + 1][id[y] - 1];
-            auto& tt = mk[id[x] + 1][id[y] - 1];
-            for (int i = x; i < st[id[x] + 1]; i++) change(i, tt, ans);
-            for (int i = st[id[y]]; i <= y; i++) change(i, tt, ans);
-            for (int i = x; i < st[id[x] + 1]; i++) tt[a[i]] = (tt[a[i]] ^ 1);
-            for (int i = st[id[y]]; i <= y; i++) tt[a[i]] = (tt[a[i]] ^ 1);
+            auto& now = mk[id[y] - 1];
+            const auto& fr = mk[id[x]];
+            for (int i = x; i < st[id[x] + 1]; i++) change(i, fr, now, ans);
+            for (int i = st[id[y]]; i <= y; i++) change(i, fr, now, ans);
+            for (int i = x; i < st[id[x] + 1]; i++) now[a[i]] = (now[a[i]] ^ 1);
+            for (int i = st[id[y]]; i <= y; i++) now[a[i]] = (now[a[i]] ^ 1);
         }
         cout << ans << ' ';
     }
