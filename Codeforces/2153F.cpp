@@ -80,33 +80,33 @@ private:
 #define fflush(stdout) __IOER__.flush()
 #define endl '\n'
 using namespace std;
-
+ 
 void solve() {
     int n, q, tot = 0;
     cin >> n >> q;
-    if (n <= 10 || q <= 10) {
-        vector<int> a(n + 1), tmp(n + 1);
-        for (int i = 1; i <= n; i++) cin >> a[i];
-        int x, y;
-        long long ans = 0;
-        while (q--) {
-            cin >> x >> y;
-            x = (x - 1 + ans) % n + 1;
-            y = (y - 1 + ans) % n + 1;
-            if (x > y) swap(x, y);
-            ans = 0;
-            for (int i = x; i <= y; i++) {
-                tmp[a[i]] = tmp[a[i]] ^ 1;
-                if (tmp[a[i]]) ans += a[i];
-                else ans -= a[i];
-            }
-            for (int i = x; i <= y; i++) tmp[a[i]] = 0;
-            cout << ans << ' ';
-        }
-        cout << endl;
-        return;
-    }
-    const int B = ceil(sqrt((long long) n * n / q));
+    // if (n <= 10 || q <= 10) {
+    //     vector<int> a(n + 1), tmp(n + 1);
+    //     for (int i = 1; i <= n; i++) cin >> a[i];
+    //     int x, y;
+    //     long long ans = 0;
+    //     while (q--) {
+    //         cin >> x >> y;
+    //         x = (x - 1 + ans) % n + 1;
+    //         y = (y - 1 + ans) % n + 1;
+    //         if (x > y) swap(x, y);
+    //         ans = 0;
+    //         for (int i = x; i <= y; i++) {
+    //             tmp[a[i]] = tmp[a[i]] ^ 1;
+    //             if (tmp[a[i]]) ans += a[i];
+    //             else ans -= a[i];
+    //         }
+    //         for (int i = x; i <= y; i++) tmp[a[i]] = 0;
+    //         cout << ans << ' ';
+    //     }
+    //     cout << '\n';
+    //     return;
+    // }
+    const int B = max((int) ceil(sqrt((long long) n * n / q)), 1);
     vector<int> a(n + 1), id(n + 1), st(n / B + 5);
     for (int i = 1; i <= n; i += B) {
         st[++tot] = i;
@@ -122,7 +122,7 @@ void solve() {
         if (now[a[id]] ^ fr[a[id]]) v += a[id];
         else v -= a[id]; 
     };
-
+    // cout << B << '$' << tot << endl;
     for (int i = 1; i <= tot; i++) {
         int k = st[i];
         vector<bool> tmp(n + 1);
@@ -165,12 +165,14 @@ void solve() {
         cout << ans << ' ';
     }
     cout << '\n';
+    // cout << endl << endl << clock() / CLOCKS_PER_SEC << endl;
 }
-
+ 
 int main() {
     // ios::sync_with_stdio(0); cin.tie(0);
     int t;
     cin >> t;
     while (t--) solve();
+    
     return 0;
 }
