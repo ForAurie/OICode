@@ -107,9 +107,6 @@ void solve() {
         return;
     }
     const int B = ceil(sqrt((long long) n * n / q));
-    // min(max((int) ceil(sqrt((long long) n * n / q)), (int) sqrt((long long) n * n * n / (850ll * 1000ll * 1000ll * 8ll))), n);
-    // cout << B << endl;
-    // return;
     vector<int> a(n + 1), id(n + 1), st(n / B + 5);
     // (n / B) * n <= 1024ll * 1024 * 1024 * 8
     // (n / B) * n = qB
