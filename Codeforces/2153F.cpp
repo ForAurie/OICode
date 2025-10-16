@@ -132,6 +132,7 @@ void solve() {
                 tmp[a[k]] = (tmp[a[k]] ^ 1);
                 if (tmp[a[k]]) pre[i][j] += a[k];
                 else pre[i][j] -= a[k];
+                k++;
             }
             if (i == 1) mk[j] = tmp;
         }
@@ -139,7 +140,6 @@ void solve() {
     long long ans = 0;
     int x, y;
     vector<bool> tmp(n + 1);
-    return;
     while (q--) {
         cin >> x >> y;
         x = (x - 1 + ans) % n + 1;
