@@ -108,8 +108,6 @@ void solve() {
     }
     const int B = ceil(sqrt((long long) n * n / q));
     vector<int> a(n + 1), id(n + 1), st(n / B + 5);
-    // (n / B) * n <= 1024ll * 1024 * 1024 * 8
-    // (n / B) * n = qB
     for (int i = 1; i <= n; i += B) {
         st[++tot] = i;
         for (int j = i; j < i + B && j <= n; j++)
@@ -141,6 +139,7 @@ void solve() {
     long long ans = 0;
     int x, y;
     vector<bool> tmp(n + 1);
+    return;
     while (q--) {
         cin >> x >> y;
         x = (x - 1 + ans) % n + 1;
@@ -169,7 +168,6 @@ void solve() {
 }
 
 int main() {
-    // cout << sqrt(1.5e5) << endl;
     // ios::sync_with_stdio(0); cin.tie(0);
     int t;
     cin >> t;
