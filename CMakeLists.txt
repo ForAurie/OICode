@@ -9,4 +9,4 @@ add_compile_options(-Wl,--stack=256000000)
 
 # add_executable(tmp Luogu/P5435.cpp)
 # add_executable(tmp Codeforces/contest2145/A.cpp)
-add_executable(tmp StarContest/2025/10/17/tree.cpp)
+add_executable(tmp StarContest/2025/10/17/lcm.cpp)
