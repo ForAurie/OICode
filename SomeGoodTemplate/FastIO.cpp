@@ -78,3 +78,4 @@ private:
 // #define getchar __IOER__.getchar
 // #define putchar __IOER__.putchar
 // #define fflush(stdout) __IOER__.flush()
+// #define endl '\n'
