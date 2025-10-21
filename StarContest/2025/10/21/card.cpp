@@ -11,6 +11,7 @@ void add(int u, int v, int vv) {
     d[v]++;
     mp[make_pair(u, v)] = vv;
 }
+set<pair<int, int>> st;
 bitset<N> mk;
 vector<int> col[N];
 void bfs(int s) {
@@ -20,7 +21,6 @@ void bfs(int s) {
     while (q.size()) {
         int u = q.front(); q.pop();
         if (mk[u]) continue;
-        // cout << num << ' ' << u << '\n';
         mk[u] = 1;
         col[num].push_back(u);
         for (int i = hd[u]; i; i = nxt[i]) {
@@ -74,7 +74,6 @@ void dfs2(int u, int fa) {
         dfs2(v, u);
         dp[u] += dp[v] + val[i];
     }
-    // cout << u << ':' << dp[u] << '\n';
 }
 int dp1[N];
 void dfs3(int u, int fa) {
@@ -93,7 +92,7 @@ void dfs3(int u, int fa) {
 int main() {
     ios::sync_with_stdio(false); cin.tie(nullptr);
     cin >> n;
-    for (int i = 1; i <= n; i++) cin >> a[i] >> b[i], add(a[i], b[i], 1), add(b[i], a[i], 0);
+    for (int i = 1; i <= n; i++) cin >> a[i] >> b[i], add(a[i], b[i], 1), add(b[i], a[i], 0), st.insert(make_pair(b[i], a[i]));
     for (int i = 1; i <= n * 2; i++) {
         if (mk[i]) continue;
         bfs(i);
@@ -103,7 +102,6 @@ int main() {
         int sum = 0;
         for (auto u : col[i]) sum += d[u];
         sum >>= 1;
-        // cout << sum << ':' << col[i].size() << '\n';
         if (sum > (int) col[i].size()) {
             cout << "-1 -1\n";
             return 0;
@@ -118,11 +116,21 @@ int main() {
             int sum2 = mp[make_pair(tmp[0], tmp.back())];
             for (int j = 0; j + 1 < (int) tmp.size(); j++)
                 sum2 += mp[make_pair(tmp[j + 1], tmp[j])];
-            if (sum1 == sum2) {
-                cnt <<= 1;
-                cnt %= mod;
+            if (tmp.size() != 2 && tmp.size() != 1) {
+                if (sum1 == sum2) {
+                    cnt <<= 1;
+                    cnt %= mod;
+                }
+                ans += min(sum1, sum2);
+            } else if (tmp.size() == 2) {
+                if (st.count(make_pair(tmp[0], tmp[1])) && st.count(make_pair(tmp[1], tmp[0]))) {
+                    ;
+                } else {
+                    cnt <<= 1;
+                    cnt %= mod;
+                    ans++;
+                }
             }
-            ans += min(sum1, sum2);
             for (int j : tmp) nvis[j] = 1;
             for (int j : tmp) dfs1(j, j);
         } else {
