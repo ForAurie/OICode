@@ -1,119 +1,126 @@
-#include <cstdio>
-#include <cstddef>
-#include <cctype>
-#include <type_traits>
-#include <string>
-#define BUF_SIZE ((1 << 20) * 4)
-class FastIO {
-private:
-    char outdat[BUF_SIZE], indat[BUF_SIZE];
-    size_t n = 0, outidx = 0, inidx = 0;
-    public:
-    inline void putchar(char c) {
-        outdat[outidx++] = c;
-        if (outidx == BUF_SIZE) {
-            std::fwrite(outdat, 1, BUF_SIZE, stdout);
-            outidx = 0;
-        }
-    }
-    inline void flush() { if (outidx) std::fwrite(outdat, 1, outidx, stdout), outidx = 0; }
-    inline char getchar() {
-        if (inidx >= n) {
-            n = std::fread(indat, 1, BUF_SIZE, stdin);
-            inidx = 0;
-            if (n == 0) return -1;
-        }
-        return indat[inidx++];
-    }
-    template<typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
-    inline FastIO& operator<<(T x) {
-        static char s[24];
-        if (x < 0) putchar('-'), x = -x;
-        int n = 0;
-        do s[n++] = x % 10 | 0x30, x /= 10;
-        while (x);
-        while (n--) putchar(s[n]);
-        return *this;
-    }
-    template<typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
-    inline FastIO& operator>>(T& x) {
-        x = 0;
-        char ch = getchar();
-        bool flag = false;
-        while (!std::isdigit(ch)) {
-            if (ch == '-') flag = true;
-            ch = getchar();
-        }
-        while (std::isdigit(ch)) {
-            x = (x << 3) + (x << 1) + (ch & 15);
-            ch = getchar();
-        }
-        if (flag) x = -x;
-        return *this;
-    }
-    inline FastIO& operator<<(char ch) { putchar(ch); return *this; }
-    inline FastIO& operator>>(char& ch) {
-        ch = getchar();
-        while(!std::isgraph(ch)) ch = getchar();
-        return *this;
-    }
-    inline FastIO& operator<<(const std::string& s) {
-        for (const auto& i : s) putchar(i);
-        return *this;
-    }
-    inline FastIO& operator>>(std::string& s) {
-        char ch = getchar();
-        while(!std::isgraph(ch)) ch = getchar();
-        s.clear();
-        do s.push_back(ch), ch = getchar();
-        while (std::isgraph(ch));
-        return *this;
-    }
-    ~FastIO() { flush(); }
-} __IOER__;
-#undef BUF_SIZE
 #include <bits/stdc++.h>
-// #define cin __IOER__
-// #define cout __IOER__
-// #define getchar __IOER__.getchar
-// #define putchar __IOER__.putchar
-// #define fflush(stdout) __IOER__.flush()
-
 using namespace std;
-constexpr int N = 1e6 + 10;
-int a[N], b[N], n, ans[N];
-string s;
-vector<int> v;
-int main() {
-    cin >> n;
-    for (int i = 1; i <= n; i++) cin >> a[i], v.push_back(a[i]);
-    for (int i = 1; i <= n; i++) cin >> b[i], v.push_back(b[i]);
-    nth_element(v.begin(), v.begin() + n - 1, v.end());
-    const int mn = v[n - 1];
-    nth_element(v.begin(), v.begin() + n, v.end());
-    const int mx = v[n];
-    int p1 = 0, p2 = 0;
-    for (int i = 1; i <= n; i++) {
-        if (a[i] == mn || b[i] == mn) p1 = i;
-        if (a[i] == mx || b[i] == mx) p2 = i;
-    }
-    if ((a[p1] == mn) == (a[p2] == mx)) swap(a[p1], b[p1]), ans[p1] ^= 1;
-    if (b[p1] == mn) swap(a[p1], b[p1]), swap(a[p2], b[p2]), ans[p1] ^= 1, ans[p2] ^= 1;
-    const int k = n / 2;
+const int N = 2e6 + 10;
+int n, m;
+int h[N], e[N], ne[N], idx;
+int f[N], din[N], dout[N];
+bool vis[N], flag, mevis[N];
+vector<int> me;
+queue<int> q;
+void Clear(void)
+{
+    memset(h, 0, sizeof(h));
+    memset(e, 0, sizeof(e));
+    memset(ne, 0, sizeof(ne));
+    idx = 0;
+    memset(f, 0, sizeof(f));
+    memset(din, 0, sizeof(din));
+    memset(dout, 0, sizeof(dout));
+    memset(vis, 0, sizeof(vis));
+    flag = 0;
+    memset(mevis, 0, sizeof(mevis));
+    me.clear();
+    while (!q.empty())
+        q.pop();
+}
+int read()
+{
+    int x;
+    scanf("%d", &x);
+    return x;
+}
+void add(int u, int v)
+{
+    e[++idx] = v;
+    ne[idx] = h[u];
+    h[u] = idx;
+    return;
+}
+bool topsort()
+{
     int cnt = 0;
     for (int i = 1; i <= n; i++)
-        cnt += (a[i] < mn);
-    for (int i = 1; i <= n; i++) {
-        if (i == p1 || i == p2) continue;
-        if (cnt == k) break;
-        if (cnt < k) {
-            if (a[i] > mn && b[i] < mn)
-                cnt++, ans[i] ^= 1;
-        } else {
-            if (a[i] < mn && b[i] > mn)
-                cnt--, ans[i] ^= 1;
+        if (din[i] == 0)
+        {
+            cnt++;
+
+            q.push(i);
+            f[i] = 1;
+        }
+    while (q.size())
+    {
+        int u = q.front();
+        q.pop();
+        for (int i = h[u]; i != 0; i = ne[i])
+        {
+            int v = e[i];
+            f[v] = max(f[v], f[u] + 1);
+            din[v]--;
+            if (din[v] == 0)
+            {
+                cnt++;
+                q.push(v);
+            }
         }
     }
-    for (int i = 1; i <= n; i++) cout << ans[i];
+    return cnt == n;
+}
+int main()
+{
+    freopen("xcx.in","r",stdin);
+    freopen("xcx.out", "w", stdout);
+    int T;
+    T = read();
+    while (T--)
+    {
+        Clear();
+        n = read(), m = read();
+        for (int i = 1; i <= m; i++)
+        {
+            int x = read(), y = read();
+            if (x == y && !vis[x])
+            {
+                vis[x] = true;
+                me.push_back(x);
+            }
+            else
+            {
+                add(x, y);
+                dout[x]++, din[y]++;
+            }
+        }
+        sort(me.begin(), me.end());
+        me.erase(unique(me.begin(), me.end()), me.end());
+        if (me.size() >= 2 || (me.size() == 1 && dout[me[0]] >= 1))
+        {
+            puts("Poor cx");
+            continue;
+        }
+        if (!topsort())
+        {
+            puts("Poor cx");
+            continue;
+        }
+        int ans = 0, macnt = 0;
+        for (int i = 1; i <= n; i++)
+            ans = max(ans, f[i]);
+        for (int i = 1; i <= n; i++)
+            if (f[i] == ans)
+                macnt++;
+        if (me.size() == 1)
+        {
+            if (f[me[0]] == ans && macnt == 1)
+                printf("Let's play\n%d\n", ans - 1);
+            else
+                printf("Let's play\n%d\n", ans);
+        }
+        else
+        {
+            if (macnt == 1)
+                printf("Let's play\n%d\n", ans - 1);
+            else
+                puts("Poor cx");
+        }
+    }
     return 0;
 }
