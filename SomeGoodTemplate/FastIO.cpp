@@ -73,9 +73,9 @@ private:
 } __IOER__;
 #undef BUF_SIZE
 #include <bits/stdc++.h>
-// #define cin __IOER__
-// #define cout __IOER__
-// #define getchar __IOER__.getchar
-// #define putchar __IOER__.putchar
-// #define fflush(stdout) __IOER__.flush()
-// #define endl '\n'
+#define cin __IOER__
+#define cout __IOER__
+#define getchar __IOER__.getchar
+#define putchar __IOER__.putchar
+#define fflush(stdout) __IOER__.flush()
+#define endl '\n'
