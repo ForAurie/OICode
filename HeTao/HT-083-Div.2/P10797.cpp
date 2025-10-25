@@ -31,17 +31,6 @@ void solve() {
         q.pop();
     }
     cout << ans << "\n";
-    // return 0;
-    // vector<vector<long long>> dp(n + 5, vector<long long>(n + 5, -0x3f3f3f3f3f3f3f3f));
-    // dp[0][0] = 0;
-    // for (int i = 1; i <= n; i++) {
-    //     const int cn = i - i / 2;
-    //     for (int j = 0; j <= cn; j++) {
-    //         dp[i][j] = dp[i - 1][j];
-    //         if (j) dp[i][j] = max(dp[i][j], dp[i - 1][j - 1] + a[i].b);
-    //     }
-    // }
-    // cout << dp[n][n - n / 2] << endl;
 }
 
 int main() {
