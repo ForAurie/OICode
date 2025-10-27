@@ -6,31 +6,37 @@
 template<size_t BUF_SIZE = (1 << 20) * 4>
 class FastIO {
 private:
-    char outdat[BUF_SIZE], indat[BUF_SIZE];
+    char outdata[BUF_SIZE], indata[BUF_SIZE];
     size_t n = 0, outidx = 0, inidx = 0;
     FILE* inFile;
     FILE* outFile;
+    int floatPrecision = 6;
+    bool useScientific = true;
 public:
     FastIO(FILE* in = stdin, FILE* out = stdout) : inFile(in), outFile(out) {}
+
+    inline void setPrecision(int p) { floatPrecision = p; }
+    inline void setScientific(bool enable) { useScientific = enable; }
+
     inline void putchar(char c) {
-        outdat[outidx++] = c;
+        outdata[outidx++] = c;
         if (outidx == BUF_SIZE) {
-            std::fwrite(outdat, 1, BUF_SIZE, outFile);
+            std::fwrite(outdata, 1, BUF_SIZE, outFile);
             outidx = 0;
         }
     }
-    inline void flush() { if (outidx) std::fwrite(outdat, 1, outidx, outFile), outidx = 0; }
+    inline void flush() { if (outidx) std::fwrite(outdata, 1, outidx, outFile), outidx = 0; }
     inline char getchar() {
         if (inidx >= n) {
-            n = std::fread(indat, 1, BUF_SIZE, inFile);
+            n = std::fread(indata, 1, BUF_SIZE, inFile);
             inidx = 0;
             if (n == 0) return -1;
         }
-        return indat[inidx++];
+        return indata[inidx++];
     }
-    template<typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+    template<typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
     inline FastIO& operator<<(T x) {
-        static char s[24];
+        static char s[40];
         if (x < 0) putchar('-'), x = -x;
         int n = 0;
         do s[n++] = x % 10 | 0x30, x /= 10;
@@ -48,7 +54,7 @@ public:
             ch = getchar();
         }
         while (std::isdigit(ch)) {
-            x = (x << 3) + (x << 1) + (ch & 15);
+            x = (x << 3) + (x << 1) + (ch ^ 0x30);
             ch = getchar();
         }
         if (flag) x = -x;
@@ -108,6 +114,59 @@ public:
         }
         return *this;
     }
+    // template<typename T, typename std::enable_if<std::is_floating_point<T>::value, int>::type = 0>
+    // inline FastIO& operator<<(T x) {
+    //     if (std::isnan(x)) return putchar('n'), putchar('a'), putchar('n'), *this;
+    //     if (std::isinf(x)) {
+    //         if (x < 0) putchar('-');
+    //         putchar('i'), putchar('n'), putchar('f');
+    //         return *this;
+    //     }
+    //     if (x < 0) {
+    //         putchar('-');
+    //         x = -x;
+    //     }
+    //     int exp10 = 0;
+    //     if (useScientific && (x != 0.0) && (x < 1e-4 || x >= 1e6)) {
+    //         exp10 = static_cast<int>(std::floor(std::log10(x)));
+    //         x /= std::pow(10.0, exp10);
+    //     }
+    //     T intPart;
+    //     T fracPart = std::modf(x, &intPart);
+    //     static char buf[1024];
+    //     int n = 0;
+    //     if (intPart < 1) buf[n++] = '0';
+    //     else {
+    //         while (intPart >= 1) {
+    //             T tmp = std::floor(std::fmod(intPart, 10));
+    //             buf[n++] = static_cast<int>(tmp + 1e-4) | 0x30;
+    //             intPart = std::floor(intPart / 10);
+    //         }
+    //     }
+    //     while (n--) putchar(buf[n]);
+    //     if (floatPrecision > 0) {
+    //         putchar('.');
+    //         for (int i = 0; i < floatPrecision; ++i) {
+    //             fracPart *= 10;
+    //             int digit = fracPart + 1e-4;
+    //             buf[fracLen++] =  | 0x30;
+    //             fracPart -= digit;
+    //         }
+    //         // // 去除尾随0
+    //         // while (fracLen > 0 && fracBuf[fracLen - 1] == '0') fracLen--;
+    //         // for (int i = 0; i < fracLen; ++i) putchar(fracBuf[i]);
+    //     }
+    //     if (exp10 != 0) {
+    //         putchar('e');
+    //         if (exp10 < 0) putchar('-'), exp10 = -exp10;
+    //         static char expBuf[8];
+    //         int n = 0;
+    //         do expBuf[n++] = exp10 % 10 | 0x30, exp10 /= 10;
+    //         while (exp10);
+    //         while (n--) putchar(expBuf[n]);
+    //     }
+    //     return *this;
+    // }
     inline FastIO& operator<<(char ch) { putchar(ch); return *this; }
     inline FastIO& operator>>(char& ch) {
         ch = getchar();
