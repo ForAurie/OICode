@@ -7,7 +7,7 @@ add_compile_options(-Wall)
 # add_compile_options(-O2)
 add_compile_options(-Wl,--stack=256000000)
 
-add_executable(tmp Luogu/P14308.cpp)
+add_executable(tmp Luogu/P9754.cpp)
 # add_executable(tmp Codeforces/Contest/2149/G.cpp)
 # add_executable(tmp StarContest/2025/10/21/card.cpp)
 # add_executable(tmp HeTao/HT-083-Div.2/P10800.cpp)
