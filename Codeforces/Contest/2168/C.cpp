@@ -35,7 +35,7 @@ void solve2() {
         x |= (1 << (a.back() - 16));
         a.pop_back();
     }
-    if ((a.size() & 1) == cnt) {
+    if (((int) a.size() & 1) == cnt) {
         int tmp = calc(a) + 1;
         cout << tmp << endl;
     } else {
