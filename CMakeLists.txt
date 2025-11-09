@@ -8,6 +8,6 @@ add_compile_options(-O2)
 add_compile_options(-Wl,--stack=256000000)
 
 # add_executable(tmp Luogu/P7114.cpp)
-add_executable(tmp Codeforces/Contest/2164/A.cpp)
+add_executable(tmp Codeforces/Contest/2162/H.cpp)
 # add_executable(tmp StarContest/2025/11/03/T4.cpp)
 # add_executable(tmp HeTao/HT-085-Div.2/T1.cpp)
