@@ -7,7 +7,10 @@ add_compile_options(-Wall)
 add_compile_options(-O2)
 add_compile_options(-Wl,--stack=256000000)
 
+
+include_directories(${PROJECT_SOURCE_DIR}/include)
+
 # add_executable(tmp Luogu/P7114.cpp)
-add_executable(tmp Codeforces/Contest/2163/E.cpp)
+add_executable(tmp Codeforces/Contest/2030/D.cpp)
 # add_executable(tmp StarContest/2025/11/03/T4.cpp)
 # add_executable(tmp HeTao/HT-085-Div.2/T1.cpp)
