@@ -8,7 +8,7 @@ add_compile_options(-O2)
 add_compile_options(-Wl,--stack=2560000F00)
 
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/SomeGoodTemplate)
 
 # add_executable(tmp tmp.cpp)
 # add_executable(tmp Luogu/P7114.cpp)

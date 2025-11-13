@@ -3,20 +3,20 @@
 #include <cctype>
 #include <type_traits>
 #include <string>
-template<size_t BUF_SIZE = (1 << 20) * 4>
+template<size_t BUF_SIZE>
 class FastIO {
 private:
     char outdata[BUF_SIZE], indata[BUF_SIZE];
-    size_t n = 0, outidx = 0, inidx = 0;
+    size_t n, outidx, inidx;
     FILE* inFile;
     FILE* outFile;
-    int floatPrecision = 6;
-    bool useScientific = true;
+    // int floatPrecision = 6;
+    // bool useScientific = true;
 public:
-    FastIO(FILE* in = stdin, FILE* out = stdout) : inFile(in), outFile(out) {}
+    FastIO(FILE* in = stdin, FILE* out = stdout) : n(0), outidx(0), inidx(0), inFile(in), outFile(out) {}
 
-    inline void setPrecision(int p) { floatPrecision = p; }
-    inline void setScientific(bool enable) { useScientific = enable; }
+    // inline void setPrecision(int p) { floatPrecision = p; }
+    // inline void setScientific(bool enable) { useScientific = enable; }
 
     inline void putchar(char c) {
         outdata[outidx++] = c;
@@ -189,11 +189,11 @@ public:
         flush();
     }
 };
-FastIO<(1 << 20) * 4> __IOER__;
-#include <bits/stdc++.h>
-#define cin __IOER__
-#define cout __IOER__
-#define getchar __IOER__.getchar
-#define putchar __IOER__.putchar
-#define fflush(stdout) __IOER__.flush()
-#define endl '\n'
+// #include <bits/stdc++.h>
+// FastIO<(1 << 20) * 4> __IOER__;
+// #define cin __IOER__
+// #define cout __IOER__
+// #define getchar __IOER__.getchar
+// #define putchar __IOER__.putchar
+// #define fflush(stdout) __IOER__.flush()
+// #define endl '\n'
