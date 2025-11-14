@@ -27,8 +27,8 @@ class Splay {
 private:
     Node<T>* root;
     Compare cmp;
-    static size_t get_sz(Node<T>* p) { return p ? p->size : 0; }
-    inline void pushup(Node<T>* p) { p->size = get_sz(p->son[0]) + get_sz(p->son[1]) + p->count; } // 不会为空
+    static size_t get_sz(Node<T>* u) { return u ? u->size : 0; }
+    inline void pushup(Node<T>* u) { u->size = get_sz(u->son[0]) + get_sz(u->son[1]) + u->count; } // 不会为空
     void rotate(Node<T>* u) { // u->fa 必须有效
         Node<T>* f = u->fa;
         Node<T>* ff = f->fa;
@@ -79,15 +79,6 @@ public:
         splay(u);
         return u;
     }
-    // Node<T>* find_nosplay(const T& v) {
-    //     Node<T>* u = root; Node<T>* last = nullptr;
-    //     while (u) {
-    //         last = u;
-    //         if (!cmp(u->value, v) && !cmp(v, u->value)) { return u; }
-    //         u = u->son[cmp(u->value, v)];
-    //     }
-    //     return nullptr;
-    // }
     void erase(const T& v) {
         Node<T>* u = find(v);
         if (!u) return;
@@ -107,24 +98,24 @@ public:
         pushup(root = m); // 根可以直接 pushup
         delete u;
     }
-    // void erase(Node<T>* u) {
-    //     if (!u) return;
-    //     splay(u);
-    //     if (u->count > 1) { u->count--; pushup(u); return; } // 根可以直接 pushup
-    //     Node<T>* L = u->son[0]; Node<T>* R = u->son[1];
-    //     if (!L) {
-    //         if (R) R->fa = nullptr;
-    //         root = R;
-    //         delete u; return;
-    //     }
-    //     L->fa = nullptr;
-    //     Node<T>* m = rightmost(L);
-    //     splay(m);
-    //     m->son[1] = R;
-    //     if (R) R->fa = m;   
-    //     pushup(root = m); // 根可以直接 pushup
-    //     delete u;
-    // }
+    void erase(Node<T>* u) {
+        if (!u) return;
+        splay(u);
+        if (u->count > 1) { u->count--; pushup(u); return; } // 根可以直接 pushup
+        Node<T>* L = u->son[0]; Node<T>* R = u->son[1];
+        if (!L) {
+            if (R) R->fa = nullptr;
+            root = R;
+            delete u; return;
+        }
+        L->fa = nullptr;
+        Node<T>* m = rightmost(L);
+        splay(m);
+        m->son[1] = R;
+        if (R) R->fa = m;   
+        pushup(root = m); // 根可以直接 pushup
+        delete u;
+    }
     Node<T>* get_by_rank(size_t rk) {
         if (rk >= get_sz(root)) return nullptr; // get_sz 已经有非空判断了
         Node<T>* u = root;
@@ -135,58 +126,25 @@ public:
             else rk -= left + u->count, u = u->son[1];
         }
     }
-    // Node<T>* get_by_rank_nosplay(size_t rk) const {
-    //     if (rk >= get_sz(root)) return nullptr; // get_sz 已经有非空判断了
-    //     Node<T>* u = root;
-    //     while (u) {
-    //         size_t left = get_sz(u->son[0]);
-    //         if (rk < left) u = u->son[0];
-    //         else if (rk < left + u->count) return u;
-    //         else { rk -= left + u->count; u = u->son[1]; }
-    //     }
-    //     return nullptr;
-    // }
-    Node<T>* successor(Node<T>* u) {
+    Node<T>* prev_upper_bound(const T& v) {
+        if (!root) return nullptr;
+        find(v);
+        if (cmp(root->value, v)) return root;
+        Node<T>* u = root->son[0];
         if (!u) return nullptr;
-        splay(u);
-        if (!(u = u->son[1])) return nullptr;
-        while (u->son[0]) u = u->son[0];
-        return u;
-        // if (u->son[1]) return leftmost(u->son[1]);
-        // Node<T>* p = u->fa;
-        // while (p && u == p->son[1]) { u = p; p = p->fa; }
-        // return p;
-    }
-    Node<T>* predecessor(Node<T>* u) {
-        if (!u) return nullptr;
-        splay(u);
-        if (!(u = u->son[0])) return nullptr;
         while (u->son[1]) u = u->son[1];
+        splay(u);
         return u;
-        // if (u->son[0]) return rightmost(u->son[0]);
-        // Node<T>* p = u->fa;
-        // while (p && u == p->son[0]) { u = p; p = p->fa; }
-        // return p;
     }
-    Node<T>* lower_bound(const T& v) {
-        // if (!root) return nullptr;
-        // find(v);
-        // if (!cmp(root->value, v)) return root;
-        // Node<T>* u = root->son[1];
-        // if (!u) return nullptr;
-        // while (u->son[0]) u = u->son[0];
-        // return u;
-        Node<T>* u = root;
-        Node<T>* res = nullptr;
-        while (u) {
-            if (!cmp(u->value, v)) {
-                res = u;
-                u = u->son[0];
-            } else u = u->son[1];
-        }
-        if (res) { splay(res); return res; }
-        return nullptr;
-    }
+    // Node<T>* lower_bound(const T& v) {
+    //     if (!root) return nullptr;
+    //     find(v);
+    //     if (!cmp(root->value, v)) return root;
+    //     Node<T>* u = root->son[1];
+    //     if (!u) return nullptr;
+    //     while (u->son[0]) u = u->son[0];
+    //     return u;
+    // }
     Node<T>* upper_bound(const T& v) {
         if (!root) return nullptr;
         find(v);
@@ -197,51 +155,11 @@ public:
         splay(u);
         return u;
     }
-    // Node<T>* lower_bound_nosplay(const T& v) const {
-    //     Node<T>* u = root;
-    //     Node<T>* res = nullptr;
-    //     while (u) {
-    //         if (!cmp(u->value, v)) { res = u; u = u->son[0]; }
-    //         else u = u->son[1];
-    //     }
-    //     return res;
-    // }
-    // Node<T>* upper_bound_nosplay(const T& v) const {
-    //     Node<T>* u = root;
-    //     Node<T>* res = nullptr;
-    //     while (u) {
-    //         if (cmp(v, u->value)) { res = u; u = u->son[0]; }
-    //         else u = u->son[1];
-    //     }
-    //     return res;
-    // }
-    // size_t rank_of_nosplay(Node<T>* u) const {
-    //     if (!u) return get_sz(root);
-    //     size_t r = get_sz(u->son[0]);
-    //     Node<T>* cur = u;
-    //     while (cur->fa) {
-    //         if (cur == cur->fa->son[1])
-    //             r += get_sz(cur->fa->son[0]) + cur->fa->count;
-    //         cur = cur->fa;
-    //     }
-    //     return r;
-    // }
-    size_t rank_of(Node<T>* u) const {
+    size_t rank_of(Node<T>* u) {
         if (!u) return get_sz(root);
         splay(u);
         return get_sz(u.son[0]);
     }
-    // size_t rank_of_value_nosplay(const T& v) const {
-    //     Node<T>* u = root;
-    //     size_t res = 0;
-    //     while (u) {
-    //         if (cmp(u->value, v)) {
-    //             res += get_sz(u->son[0]) + u->count;
-    //             u = u->son[1];
-    //         } else u = u->son[0];
-    //     }
-    //     return res;
-    // }
     size_t rank_of_value(const T& v) {
         if (!root) return 0;
         find(v);
@@ -277,7 +195,7 @@ int main() {
             last =  ST.get_by_rank(x - 1)->value;
             ans ^= last;
         } else if (op == 5) {
-            last = ST.predecessor(ST.lower_bound(x))->value;
+            last = ST.prev_upper_bound(x)->value;
             ans ^= last;
         } else if (op == 6) {
             last = ST.upper_bound(x)->value;
