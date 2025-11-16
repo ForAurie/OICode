@@ -1,36 +1,43 @@
 #include <bits/stdc++.h>
-
-using namespace namespace std;
-
+constexpr int mod = 1e9 + 7;
+using namespace std;
+typedef long long ll;
+constexpr int N = 310;
+int dp[2][N][N];
 void solve() {
     int n, l, r;
     cin >> n;
-    // nfa nson
-    vector<vector<vector<vector<int>>>> dp(n + 1, vector<vector<vector<int>>>(n + 1, vector<vector<int>>(n + 1, vector<int>(2, 0))));
+    memset(dp, 0, sizeof(dp));
+    dp[0][0][0] = 1;
     for (int i = 1; i <= n; i++) {
         cin >> l >> r;
-        for (int son = 0; son < 3; son++) {
-            if (son < l || son > r) continue;
+        const int cur = i & 1, pre = cur ^ 1;
+        memset(dp[cur], 0, sizeof(dp[cur]));
+        for (int son = l; son <= r; son++) {
             for (int j = 0; j <= n; j++) {
                 for (int k = 0; k <= n; k++) {
-                    for (int l = 0; l < 2; l++) {
-                        if (son == 0) {
-                            (dp[i][][k - 1][l] += k * dp[i - 1][j][k][l]) %= mod;
-                            (dp[i][][k][1] += dp[i - 1][j][k][l]) %= mod;
-                            // (dp[i][j + 1][][l] += dp[i - 1][][][l]) %= mod;
-                        } else if (son == 1) {
-                            ;
-                        } else {
-                            ;
-                        }
+                    if (son == 0) {
+                        (dp[cur][j + 1][k] += dp[pre][j][k]) %= mod; // fa 往后
+                        if (k) (dp[cur][j][k - 1] += (ll) k * dp[pre][j][k] % mod) %= mod; // fa 往前
+                    } else if (son == 1) {
+                        (dp[cur][j][k] += 2ll * k * dp[pre][j][k] % mod) %= mod; // fa 往前
+                        (dp[cur][j + 1][k + 1] += 2 * dp[pre][j][k] % mod) %= mod; // fa 往后
+                    } else if (son == 2) {
+                        (dp[cur][j][k + 1] += (ll) k * dp[pre][j][k] % mod) %= mod; // son 全往后，fa 往前
+                        (dp[cur][j + 1][k + 2] += dp[pre][j][k] % mod) %= mod; // son 全往后，fa 往后
+                        (dp[cur][j][k + 1] += 2ll * j * dp[pre][j][k] % mod) %= mod; // son 一前一后，fa 往后
+                        if (j) (dp[cur][j - 1][k] += 2ll * k * (j - 1ll) % mod * dp[pre][j][k] % mod) %= mod; // son 一前一后，fa 往前
                     }
                 }
             }
         }
     }
+    cout << dp[n & 1][1][0] << "\n";
 }
 
 int main() {
+    freopen("tree.in", "r", stdin);
+    freopen("tree.out", "w", stdout);
     ios::sync_with_stdio(false); cin.tie(nullptr);
     int tid, t;
     cin >> tid >> t;
