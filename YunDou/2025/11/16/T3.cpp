@@ -22,22 +22,6 @@ void solve() {
         if (L[t[i]] == 0x3f3f3f3f) L[t[i]] = i;
         R[t[i]] = i;
     }
-
-    // vector<vector<ll>> dp(m + 2, vector<ll>(n + 2, -0x3f3f3f3f3f3f3f3f));
-    // dp[0][0] = 0;
-    // for (int i = 0; i <= m; i++) {
-    //     for (int j = 0; j <= n; j++) {    
-    //         if (L[s[j + 1]] <= i && R[s[j + 1]] > i) {
-    //             if (s[j + 1] == t[i + 1]) dmax(dp[i + 1][j + 1], dp[i][j] + a[j + 1]);
-    //         } else {
-    //             if (s[j + 1] != t[i + 1]) dmax(dp[i][j + 1], dp[i][j]);
-    //             else dmax(dp[i][j + 1], dp[i][j]), dmax(dp[i + 1][j + 1], dp[i][j] + a[j + 1]);
-    //         }
-    //     }
-    // }
-    // ll mx = -0x3f3f3f3f3f3f3f3f;
-    // for (int i = 0; i <= n; i++) mx = max(mx, dp[m][i]);
-    
     // vector<vector<ll>> dp(2, vector<ll>(m + 2, -0x3f3f3f3f3f3f3f3f));
     // dp[0][0] = 0;
     // ll mx = -0x3f3f3f3f3f3f3f3f;

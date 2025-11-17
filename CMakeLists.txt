@@ -10,7 +10,7 @@ add_compile_options(-Wl,--stack=2560000F00)
 
 include_directories(${PROJECT_SOURCE_DIR}/SomeGoodTemplate)
 
-add_executable(tmp YunDou/2025/11/16/T3.cpp)
+add_executable(tmp YunDou/2025/11/17/T3.cpp)
 # add_executable(tmp Splay.cpp)
 # add_executable(tmp Luogu/P7114.cpp)
 # add_executable(tmp Codeforces/Contest/2048/E.cpp)
