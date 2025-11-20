@@ -19,10 +19,11 @@ vector<edge> es;
 vector<int> G[N];
 priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> q;
 void update(int p, int id, int val, int nl = 1, int nr = n) {
-    auto st = tr[p].lower_bound(make_pair(es[id].d, 0)), ed = tr[p].upper_bound(make_pair(es[id].u, 0x3f3f3f3f));
-    if (st == ed) return;
-    if (nl == nr) {
+    // if (st == ed) return;
+    if (es[id].l <= nl && nr <= es[id].r) {
+        auto st = tr[p].lower_bound(make_pair(es[id].d, 0)), ed = tr[p].upper_bound(make_pair(es[id].u, 0x3f3f3f3f));
         for (auto it = st; it != ed; it++) {
+            if (dis[it->second] < 1e9) continue;
             dis[it->second] = val;
             for (int i : G[it->second]) {
                 // cerr << i << endl;
@@ -35,11 +36,10 @@ void update(int p, int id, int val, int nl = 1, int nr = n) {
     int mid = (nl + nr) >> 1;
     if (es[id].l <= mid) update(ls, id, val, nl, mid);
     if (es[id].r > mid) update(rs, id, val, mid + 1, nr);
-    tr[p].erase(st, ed);
 }
 
 int main() {
-    freopen("jump2.in", "r", stdin);
+    freopen("jump2.in", "r", stdin); 
     freopen("jump.out", "w", stdout);
     ios::sync_with_stdio(0), cin.tie(0);
     int x, y, m, w, h;
