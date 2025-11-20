@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
-constexpr int N = 7e4 + 10;
+constexpr int N = 1e5 + 10;
 int dis[N], n, m;
 struct edge {
     int l, r, d, u, t;
@@ -25,6 +25,7 @@ void update(int p, int id, int val, int nl = 1, int nr = n) {
         for (auto it = st; it != ed; it++) {
             dis[it->second] = val;
             for (int i : G[it->second]) {
+                // cerr << i << endl;
                 q.push(make_pair(val + es[i].t, i));
             }
         }
@@ -38,6 +39,8 @@ void update(int p, int id, int val, int nl = 1, int nr = n) {
 }
 
 int main() {
+    freopen("jump2.in", "r", stdin);
+    freopen("jump.out", "w", stdout);
     ios::sync_with_stdio(0), cin.tie(0);
     int x, y, m, w, h;
     cin >> n >> m >> w >> h;
