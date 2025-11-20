@@ -39,8 +39,8 @@ void update(int p, int id, int val, int nl = 1, int nr = n) {
 }
 
 int main() {
-    freopen("jump2.in", "r", stdin); 
-    freopen("jump.out", "w", stdout);
+    // freopen("jump2.in", "r", stdin); 
+    // freopen("jump.out", "w", stdout);
     ios::sync_with_stdio(0), cin.tie(0);
     int x, y, m, w, h;
     cin >> n >> m >> w >> h;
