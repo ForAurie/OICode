@@ -136,15 +136,15 @@ public:
         splay(u);
         return u;
     }
-    // Node<T>* lower_bound(const T& v) {
-    //     if (!root) return nullptr;
-    //     find(v);
-    //     if (!cmp(root->value, v)) return root;
-    //     Node<T>* u = root->son[1];
-    //     if (!u) return nullptr;
-    //     while (u->son[0]) u = u->son[0];
-    //     return u;
-    // }
+    Node<T>* lower_bound(const T& v) {
+        if (!root) return nullptr;
+        find(v);
+        if (!cmp(root->value, v)) return root;
+        Node<T>* u = root->son[1];
+        if (!u) return nullptr;
+        while (u->son[0]) u = u->son[0];
+        return u;
+    }
     Node<T>* upper_bound(const T& v) {
         if (!root) return nullptr;
         find(v);
