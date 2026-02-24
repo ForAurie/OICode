@@ -13,23 +13,38 @@ void times(vector<ll>& a, const vector<ll>& b) {
     }
     swap(a, res);
 }
-void dijkstra(int s, const vector<vector<pair<int, int>>>& G, vector<ll>& dis, int n) {
-    dis.assign(n + 1, INF);
-    vector<bool> mk(n + 1);
-    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> q;
-    q.push(make_pair(0, s));
-    dis[s] = 0;
-    while (q.size()) {
-        int u = q.top().second; q.pop();
-        if (mk[u]) continue;
-        mk[u] = true;
-        for (auto i : G[u]) {
-            int v = i.first;
-            ll w = i.second + dis[u];
-            if (dis[v] > w) q.push(make_pair(dis[v] = w, v));
+using ull = unsigned long long;
+inline ull make(ll x, int y) { return (x << 20) | y; };
+class ZKW {
+private:
+    int n, size;
+    vector<ull> tree;
+public:
+    ZKW(int _n) {
+        n = _n;
+        size = 1;
+        while (size < n) size <<= 1;
+        tree.assign(size << 1, INF);
+    }
+    void build(const vector<ll>& arr) {
+        for (int i = 0; i < arr.size(); i++)
+            tree[size + i] = make(arr[i], i);
+        for (int i = size - 1; i > 0; i--)
+            tree[i] = min(tree[i << 1], tree[i << 1 | 1]);
+    }
+    void update(int index, ull value) {
+        int pos = size + index;
+        tree[pos] = value;
+        pos >>= 1;
+        while (pos) {
+            tree[pos] = min(tree[pos << 1], tree[pos << 1 | 1]);
+            pos >>= 1;
         }
     }
-}
+    ull query_min() {
+        return tree[1];
+    }
+};
 void solve() {
     int n, m, k, q;
     cin >> n >> m;
@@ -41,40 +56,45 @@ void solve() {
         G[y].push_back(make_pair(x, v));
     }
     cin >> k >> q;
-    vector<vector<pair<int, int>>> c(k + 1);
-    vector<int> ps;
+    vector<vector<pair<int, int>>> c(n + 1);
     while (q--) {
         static int x, y, z;
         cin >> x >> y >> z;
-        c[z].push_back(make_pair(x, y)); // 时间 点
-        ps.push_back(y);
+        c[y].push_back(make_pair(x, z)); // 时间 种类
     }
-    ps.push_back(1);
-    sort(ps.begin(), ps.end());
-    ps.erase(unique(ps.begin(), ps.end()), ps.end());
-    vector<vector<ll>> dis(n + 1);
-    for (int i = 1; i <= k; i++)
-        sort(c[i].begin(), c[i].end(), greater<pair<int, int>>());
-    vector<vector<ll>> dp(1 << k, vector<ll>(n + 1, INF)); // 1e7
-    dp[0][1] = 0;
+    using ull = unsigned long long;
+    
+    vector<vector<ull>> pre(1 << k);
+    vector<bool> mk;
+    pre[0].push_back(make(0, 1));
+    vector<ll> dis;
+    vector<ll> base(1 << k, INF);
     for (int S = 0; S < (1 << k); S++) {
-        for (int p : ps) {
-            for (int i = 0; i < k; i++) {
-                if ((S >> i) & 1) continue;
-                for (auto j : c[i + 1]) {
-                    if (j.first < dp[S][p]) break;
-                    if (dis[j.second].empty()) dijkstra(j.second, G, dis[j.second], n);
-                    ll w = dp[S][p] + dis[j.second][p];
-                    if (j.first >= w) dmin(dp[S ^ (1 << i)][j.second], max((ll) j.first, w));
-                }
+        mk.assign(n + 1, false);
+        dis.assign(n + 1, INF);
+        for (ull i : pre[S]) dmin(dis[i & ((1ull << 20) - 1)], (ll) i >> 20);
+        ZKW pq(dis.size());
+        pq.build(dis);
+        while ((pq.query_min() >> 20) < (INF >> 20)) {
+            int u = pq.query_min() & ((1ull << 20) - 1);
+            pq.update(u, make(INF, n + 1));
+            if (mk[u]) continue;
+            mk[u] = 1;
+            for (auto [v, w] : G[u]) {
+                if (dis[v] > dis[u] + w)
+                    pq.update(v, make(dis[v] = dis[u] + w, v));
+            }
+            for (auto [t, i] : c[u]) {
+                if ((S >> (i - 1)) & 1) continue;
+                if (t < dis[u]) continue;
+                ll w = max((ll) t, dis[u]);
+                pre[S | (1 << (i - 1))].push_back(make(w, u));
             }
         }
+        for (int i = 1; i <= n; i++) dmin(base[S], dis[i]);
     }
-    vector<ll> base(1 << k, INF);
-    for (int S = 0; S < (1 << k); S++)
-        for (int i = 1; i <= n; i++) dmin(base[S], dp[S][i]);
     vector<ll> ans(base);
-    for (int i = 1; i <= k; i++) { // 1024 * 1024 * (k = 10) = 1e7
+    for (int i = 1; i <= k; i++) {
         if (ans[(1 << k) - 1] >= INF) cout << -1 << ' ';
         else cout << ans[(1 << k) - 1] << ' ';
         if (i != k) times(ans, base);
@@ -82,14 +102,11 @@ void solve() {
     cout << '\n';
 }
 int main() {
-    // freopen("..\\HeTao\\SXD1\\amereistr5.in", "r", stdin);
-    // freopen("..\\HeTao\\SXD1\\amereistr.out", "w", stdout);
     freopen("amereistr.in", "r", stdin);
-    freopen("amereistr.out", "w", stdout);
+    freopen("amereistr.out", "w" , stdout);
     ios::sync_with_stdio(false), cin.tie(nullptr);
     int t;
     cin >> t;
     while (t--) solve();
-    // cerr << clock() << endl;
     return 0;
 }
