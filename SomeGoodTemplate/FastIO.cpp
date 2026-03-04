@@ -20,7 +20,7 @@ public:
     inline void flush() {
         if (outidx) {
             std::fwrite(outdata, 1, outidx, outFile); outidx = 0;
-            std::fflush(outFile)
+            std::fflush(outFile);
         }
     }
     inline char getchar() {
@@ -124,10 +124,10 @@ public:
         while (std::isgraph(ch));
         return *this;
     }
-    inline FastIO& operator<<(const std::ostream& (*pf)(std::ostream&)) {
-        if (pf == std::endl) { putchar('\n'); flush(); }
-        return *this;
-    }
+    // inline FastIO& operator<<(const std::ostream& (*pf)(std::ostream&)) {
+    //     if (pf == std::endl) { putchar('\n'); flush(); }
+    //     return *this;
+    // }
     ~FastIO() { flush(); }
 };
 #include <bits/stdc++.h>
